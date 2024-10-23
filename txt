@@ -1,0 +1,355 @@
+
+
+// ========================================================
+
+let db;
+
+const request = indexedDB.open("UniversityDB", 1); // تأكد من أنك تستخدم الإصدار الصحيح
+
+request.onupgradeneeded = function(event) {
+    db = event.target.result;
+
+    // إنشاء متجر بيانات الطلاب
+    if (!db.objectStoreNames.contains("Students")) {
+        const studentStore = db.createObjectStore("Students", { keyPath: "id", autoIncrement: true });
+        studentStore.createIndex("name", "name", { unique: false });
+        // studentStore.createIndex("result", "result", { unique: false });
+        // studentStore.createIndex("performance", "performance", { unique: false });
+    }
+};
+
+request.onsuccess = function(event) {
+    db = event.target.result; // Assign the database instance to the db variable
+    displayAllStudents(); // Display existing students
+    updateStatistics() 
+};
+
+request.onerror = function(event) {
+    console.error("Database error: ", event.target.errorCode);
+};
+
+
+
+
+
+function toggleStudentForm() {
+    const studentForm = document.getElementById("studentForm");
+
+    // Toggle the display between block and none
+    if (studentForm.style.display === "none" || studentForm.style.display === "") {
+        studentForm.style.display = "block"; // Show the form
+    } else {
+        studentForm.style.display = "none"; // Hide the form
+    }
+}
+
+// Add event listener to the "+" button to toggle the form
+document.getElementById("openFormBtn").addEventListener("click", toggleStudentForm);
+// Add event listener to the "Close" button to hide the form
+document.getElementById("closeFormBtn").addEventListener("click", function() {
+    document.getElementById("studentForm").style.display = "none"; // Hide the form when "Close" is clicked
+});
+
+
+
+function addStudent(event) {
+    event.preventDefault(); // منع إرسال الفورم تلقائياً
+    const studentName = document.getElementById("studentName").value;
+    const studentResult = document.getElementById("StudentResult").value;
+    const studentPerformance = document.getElementById("StudentPerformance").value;
+
+    // التحقق من أن جميع الحقول معبأة
+    if (!studentName || !studentResult || !studentPerformance) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    if (!/^[a-zA-Z\u0600-\u06FF\s]+$/.test(studentName)) {
+        alert('Please enter a valid name containing only letters.');
+        studentName.focus(); // إعادة التركيز على حقل الاسم
+        return;
+    }
+    
+    const transaction = db.transaction(["Students"], "readwrite");
+    const studentStore = transaction.objectStore("Students");
+
+    const student = {
+        name: studentName,
+        result: studentResult,
+        performance: studentPerformance
+    };
+
+    const request = studentStore.add(student);
+
+    request.onsuccess = function() {
+        document.getElementById("studentName").value = "";
+        document.getElementById("StudentResult").value = "";
+        document.getElementById("StudentPerformance").value = "";
+        displayAllStudents() // عرض الطلاب بعد الإضافة
+        updateStatistics()
+       // إخفاء نموذج إضافة الطلاب
+       toggleStudentForm();
+    };
+
+    request.onerror = function(event) {
+        console.error("Error adding student: ", event.target.errorCode);
+    };
+    
+}
+
+function displayAllStudents() {
+    if (!db) { // تأكد من أن db معرف
+        console.error("Database connection is not available.");
+        return; // قم بإيقاف التنفيذ إذا لم يكن db متاحًا
+    }
+    const transaction = db.transaction(["Students"], "readonly");
+    const studentStore = transaction.objectStore("Students");
+    const request = studentStore.getAll();
+
+    request.onsuccess = function(event) {
+        const students = event.target.result;
+        const studentTableBody = document.querySelector("#studentTable tbody");
+        studentTableBody.innerHTML = ""; // تفريغ الجدول
+
+        if (students.length > 0) {
+            students.forEach(student => {
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${student.id}</td>
+                    <td>${student.name}</td>
+                    <td>${student.result}</td>
+                    <td>${student.performance}</td>
+                    <td><button class="btn btn-danger">حذف</button></td>
+                `;
+
+                studentTableBody.appendChild(row);
+            });
+        } else {
+            const row = document.createElement("tr");
+            row.innerHTML = `<td colspan="5">لا يوجد طلاب لعرضهم.</td>`;
+            studentTableBody.appendChild(row);
+        }
+    };
+}
+
+// =====================================================================================================
+ // delete studentlist
+
+document.addEventListener('DOMContentLoaded', function() {
+    const tbodyElement = document.getElementById('tbody');
+    if (tbodyElement) {
+        tbodyElement.addEventListener('click', function(event) {
+            if (event.target.classList.contains('btn-danger')) {
+                // الكود الخاص بحذف الصف
+                const row = event.target.parentElement.parentElement;
+                const studentId = parseInt(row.cells[0].textContent, 10); // استخراج ID الطالب من العمود الأول
+        
+                // إنشاء معاملة لحذف الطالب من IndexedDB
+                const transaction = db.transaction(["Students"], "readwrite");
+                const studentStore = transaction.objectStore("Students");
+        
+                // طلب حذف الطالب
+                const deleteRequest = studentStore.delete(studentId);
+        
+                deleteRequest.onsuccess = function() {
+                    console.log(`Student with ID ${studentId} has been deleted.`);
+        
+                    // تحديث عرض الطلاب بعد الحذف
+                    displayAllStudents()
+                };
+        
+                deleteRequest.onerror = function(event) {
+                    console.error("Error deleting student: ", event.target.errorCode);
+                };
+            }
+            updateStatistics()
+        });
+        
+    } else {
+        console.error('Element with ID "tbody" not found.');
+    }
+});
+// =============================================================================================
+
+// search the table by name
+document.getElementById('search').addEventListener('keyup', function () {
+    var searchValue = this.value.toLowerCase();
+
+    // الحصول على جميع الطلاب من IndexedDB
+    const transaction = db.transaction(["Students"], "readonly");
+    const studentStore = transaction.objectStore("Students");
+    const request = studentStore.getAll();
+
+    request.onsuccess = function(event) {
+        const students = event.target.result; // الحصول على جميع الطلاب
+
+        // تصفية الطلاب بناءً على قيمة البحث
+        const filteredStudents = students.filter(student => {
+            return student.name.toLowerCase().indexOf(searchValue) > -1; // تحقق من اسم الطالب
+        });
+
+        // عرض الطلاب المصفين في الجدول
+        displayFilteredStudents(filteredStudents);
+    };
+
+    request.onerror = function(event) {
+        console.error("Error retrieving students: ", event.target.errorCode);
+    };
+});
+
+// دالة لعرض الطلاب المصفين
+function displayFilteredStudents(filteredStudents) {
+    const studentTableBody = document.querySelector("#studentTable tbody");
+    studentTableBody.innerHTML = ""; // تفريغ الجدول
+
+    filteredStudents.forEach(student => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+            <td>${student.id}</td>
+            <td>${student.name}</td>
+            <td>${student.result}</td>
+            <td>${student.performance}</td>
+            <td><button class="btn btn-danger">حذف</button></td>
+        `;
+
+        studentTableBody.appendChild(row);
+    });
+}
+// ==================================================================================
+// filter 
+// إضافة حدث click للزر
+document.getElementById("filterButton").addEventListener("click", filterStudents);
+// filter students based on result
+function filterStudents() {
+    // الحصول على جميع الطلاب من IndexedDB
+    const transaction = db.transaction(["Students"], "readonly");
+    const studentStore = transaction.objectStore("Students");
+    const request = studentStore.getAll();
+
+    request.onsuccess = function(event) {
+        const students = event.target.result; // الحصول على جميع الطلاب
+
+        // تصفية الطلاب الناجحين فقط
+        const filteredStudents = students.filter(student => student.result >= 60);
+
+        // إذا لم يوجد طلاب ناجحين، عرض جميع الطلاب
+        if (filteredStudents.length === 0) {
+            displayStudents(students); // عرض جميع الطلاب
+        } else {
+            // عرض الطلاب المصفين
+            displayStudents(filteredStudents);
+        }
+    };
+
+    request.onerror = function(event) {
+        console.error("Error retrieving students: ", event.target.errorCode);
+    };
+}
+
+
+// دالة لعرض الطلاب المصفين
+function displayStudents(filteredStudents) {
+    const studentTableBody = document.querySelector("#studentTable tbody");
+    studentTableBody.innerHTML = ""; // تفريغ الجدول
+
+    // تحقق مما إذا كان هناك طلاب مصفّين
+    if (filteredStudents && filteredStudents.length > 0) {
+        filteredStudents.forEach(student => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${student.id}</td>
+                <td>${student.name}</td>
+                <td>${student.result}</td>
+                <td>${student.performance}</td>
+                <td><button class="btn btn-danger">حذف</button></td>
+            `;
+
+            studentTableBody.appendChild(row);
+        });
+    }  else {
+        // عرض رسالة عند عدم وجود طلاب ناجحين
+        const row = document.createElement("tr");
+        row.innerHTML = `<td colspan="5">لا توجد طلاب ناجحين.</td>`;
+        studentTableBody.appendChild(row);
+    }
+}
+
+// ===============================================================================================
+
+// إضافة حدث click للزر
+document.getElementById("sortButton").addEventListener("click", sortStudentsAZ);
+
+// دالة لفرز الطلاب من A-Z
+function sortStudentsAZ() {
+    // الحصول على جميع الطلاب من IndexedDB
+    const transaction = db.transaction(["Students"], "readonly");
+    const studentStore = transaction.objectStore("Students");
+    const request = studentStore.getAll();
+
+    request.onsuccess = function(event) {
+        const students = event.target.result;
+          // إذا لم يوجد طلاب، لا تفعل شيئاً
+        if (students.length === 0) {
+            console.log("No students available for sorting.");
+            return;
+        }
+
+        // فرز الطلاب بناءً على الاسم بترتيب أبجدي
+        students.sort((a, b) => a.name.localeCompare(b.name));
+
+        // عرض الطلاب بعد الفرز
+        displayStudents(students);
+    };
+
+    request.onerror = function(event) {
+        console.error("Error retrieving students: ", event.target.errorCode);
+    };
+}
+
+
+// دالة لعرض الطلاب
+function displayStudents(students) {
+    const studentTableBody = document.querySelector("#studentTable tbody");
+    studentTableBody.innerHTML = ""; // تفريغ الجدول
+
+    if (students && students.length > 0) {
+        students.forEach(student => {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${student.id}</td>
+                <td>${student.name}</td>
+                <td>${student.result}</td>
+                <td>${student.performance}</td>
+                <td><button class="btn btn-danger">حذف</button></td>
+            `;
+
+            studentTableBody.appendChild(row);
+        });
+    } else {
+        // عرض رسالة إذا لم يكن هناك طلاب
+        const row = document.createElement("tr");
+        row.innerHTML = `<td colspan="5">لا يوجد طلاب لعرضهم.</td>`;
+        studentTableBody.appendChild(row);
+    }
+}
+
+
+
+// ========================================================================================
+
+function updateStatistics() {
+
+    const studentTransaction = db.transaction(["Students"], "readonly");
+    const studentStore = studentTransaction.objectStore("Students");
+
+    const studentRequest = studentStore.count();
+
+    studentRequest.onsuccess = function(event) {
+        document.getElementById("totalStudents").textContent = event.target.result; // Update total students count
+    };
+
+}
