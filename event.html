@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&amp;display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://kit.fontawesome.com/a19206bc17.js" crossorigin="anonymous"></script>
      <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -127,130 +126,50 @@
                 <i class="fa-solid fa-check"></i>
               </div>
               <div class="overview_card_content">
-                <h5>0</h5>
+                <h5 id="TotalEvents">0</h5>
                 <p   data-translate="EventCreated">Event Created</p>
               </div>
             </div>
           </div>
-          
-          <div class="col-md-4 small-card">
-            <div class="overview-card">
-              <div class="overview_card_icon">
-                <i class="fa-solid fa-hourglass-half"></i>
-              </div>
-              <div class="overview_card_content">
-                <h5>0</h5>
-                <p data-translate="EventForThisWeek">Event For You This Week</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-4 small-card">
-            <div class="overview-card">
-              <div class="overview_card_icon">
-                <i class="fa-solid fa-plus"></i>
-              </div>
-              <div class="overview_card_content">
-                <h5>Add Evant</h5>
-                <p data-translate="ToPlanWeek" >To Plan Your Week</p>
-              </div>
-            </div>
-          </div>
-
+  
         </div>
 
         <div class="content">
           <!-- Events Section -->
           <div class="Events">
             
-            <div class="d-flex justify-content-between align-items-center mb-3 My-Events-buttom ">
-              <input type="date" class="form-control w-50" aria-label="dateInput" aria-describedby="dateIcon">
-              <button class="btn btn-add" data-translate="AddMy_Events">+ Add Event</button>
+            <div  class="d-flex justify-content-between align-items-center mb-3 My-Events-buttom ">
+              <input type="date" class="form-control w-50" aria-label="dateInput" aria-describedby="dateIcon"id="filterDate" onchange="filterEventsByDate()" >
+              <button class="btn btn-add" data-translate="AddMy_Events"id="openFormBtn"  onclick="toggleEventForm()">+ Add Event</button>
+              <!-- form for add event  -->
+              
+              <div id="EventForm" class="login-box" style="z-index: 999;">
+                <h2 data-translate="OverviewAddedEvent">Add Event</h2>
+                <form class="teacherForm">
+                  <div class="user-box">
+                    <input type="text" id="MeetingName" class="mt-2" required>
+                    <label for="MeetingName">Name Of Meeting</label>
+                  </div>
+                  <div class="user-box">
+                    <input type="date" id="Day" class="mt-2" required>
+                  </div>
+                  <div class="user-box">
+                    <input type="time" id="Time" class="mt-2" required>
+                    <label for="Time"></label>
+                  </div>
+                  
+                  
+                  <button type="submit" id="add-student-btn" onclick="addEvent() "> <i class="fas fa-user-plus"></i>Add</button>
+                  <button type="button" id="updateBtn" style="display: none; background-color: green;"><i class="fas fa-user-edit"></i> Update</button>
+                  <button type="button" id="closeFormBtn" onclick="toggleEventForm()"><i class="fa-regular fa-trash-can"></i> Close</button>
+                     
+                </form>
+              </div>
+              
             </div>
 
-            <div>
-              <!-- Day 1 -->
-              <div class="day-container">
-                <div class="day">
-                  <div class="day-name">
-                      Mon
-                  </div>
-                  <div class="day-number">
-                      01
-                  </div>
-                </div>
-                <div class="event-details">
-                    <div class="event-details-internel">
-                      <div class="event-title">Meeting Introduction</div>
-                      <div class="event-time">
-                        <div class="event-time-clock ">
-                          <i class="fas fa-clock "></i>&nbsp; 09:00–10:00
-
-                        </div>
-                          <div class="event-platform">
-                              <i class="fas fa-video"></i>&nbsp; Google Meeting
-                          </div>
-                      </div>
-                    </div>
-                      <div class="arrow">
-                        <i class="fas fa-chevron-right"></i>
-                      </div>
-                </div>
-              </div>
+            <div id="eventList">
               
-              <!-- Day 2
-              <div class="day-container">
-                <div class="day">
-                  <div class="day-name">
-                      Tue
-                  </div>
-                  <div class="day-number">
-                      02
-                  </div>
-                </div>
-                <div class="event-details">
-                    <div class="event-details-internel">
-                      <div class="event-title">Math</div>
-                      <div class="event-time">
-                        <div class="event-time-clock">
-                          <i class="fas fa-clock"></i>&nbsp; 011:00–11:30
-                        </div>
-                        <div class="event-platform">
-                            <i class="fas fa-video"></i>&nbsp; Zoom
-                        </div>
-                      </div>
-                    </div>
-                      <div class="arrow">
-                        <i class="fas fa-chevron-right"></i>
-                      </div>
-                </div>
-              </div>
-
-              
-              <div class="day-container">
-                <div class="day">
-                  <div class="day-name">
-                      Wed
-                  </div>
-                  <div class="day-number">
-                      03
-                  </div>
-                </div>
-                <div class="event-details">
-                    <div class="event-details-internel">
-                      <div class="event-title">Lunch break</div>
-                      <div class="event-time">
-                        <div class="event-time-clock">
-                          <i class="fas fa-clock"></i>&nbsp; 12:00–13:00
-                        </div>
-                      </div>
-                    </div>
-                      <div class="arrow">
-                        <i class="fas fa-chevron-right"></i>
-                      </div>
-                </div>
-              </div>
- -->
             </div> 
           </div>
 
@@ -267,10 +186,11 @@
 </main>
 
 
+
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
-<script src="./js/database.js"></script>
 <script src="./js/lannguage_thems.js"></script>
+<script src="./js/event.js"></script>
 <script src="./js/main.js"></script>
 </body>
 </html>
