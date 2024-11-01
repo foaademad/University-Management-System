@@ -194,7 +194,7 @@
             <h2 class="mb-5 mt-4" data-translate="navtraining">Training</h2>
                 <div class="d-flex justify-content-between align-items-center mb-3">
                   <div class="input-group " style="width: 250px;">
-                    <input type="text" class="form-control" placeholder="Search">
+                    <input type="text" class="form-control" placeholder="Search" id="searchInput">
                     <span class="input-group-text">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </span>
@@ -202,32 +202,65 @@
                   <button class="btn btn-add"  data-translate="AddTraining"id="openFormBtn"  onclick="toggleTrainingForm()" >+ Add Training</button>
                    <!-- form for add event  -->
               
-                  <div id="TrainingForm" class="login-box" style="z-index: 999;">
-                    <h2 data-translate="OverviewAddedEvent">Add Event</h2>
-                    <form class="teacherForm">
-                      <div class="user-box">
-                        <input type="text" id="TrainingName" class="mt-2" required>
-                        <label for="TrainingName">Name Of Training</label>
-                      </div>
-                      <div class="user-box">
-                        <input type="date" id="Day" class="mt-2" required>
-                      </div>
-                      <div class="user-box">
-                        <input type="time" id="Time" class="mt-2" required>
-                        <label for="Time"></label>
-                      </div>
-                      
-                      
-                      <button type="submit" id="add-student-btn" onclick="addTraining() "> <i class="fas fa-user-plus"></i>Add</button>
-                      <button type="button" id="updateBtn" style="display: none; background-color: green;"><i class="fas fa-user-edit"></i> Update</button>
-                      <button type="button" id="closeFormBtn" onclick="toggleTrainingForm()"><i class="fa-regular fa-trash-can"></i> Close</button>
+                   <div id="TrainingForm" class="login-box" style="z-index: 999;">
+                    <h2 data-translate="OverviewAddedTraining">Add Training</h2>
+                    <form class="trainingForm">
+                        <!-- اسم التدريب -->
+                        <div class="user-box">
+                            <input type="text" id="TrainingName" class="mt-2" required>
+                            <label for="TrainingName">Name of Training</label>
+                        </div>
                         
+                        <!-- اسم المدرب -->
+                        <div class="user-box">
+                            <input type="text" id="MentorName" class="mt-2" required>
+                            <label for="MentorName">Mentor Name</label>
+                        </div>
+                        
+                        <!-- صورة المدرب -->
+                        <div class="user-box">
+                            <input type="url" id="MentorImage" class="mt-2" required>
+                            <label for="MentorImage">Mentor Image URL</label>
+                        </div>
+                        
+                        <!-- عدد الطلاب -->
+                        <div class="user-box">
+                            <input type="number" id="StudentsCount" class="mt-2" required>
+                            <label for="StudentsCount">Number of Students</label>
+                        </div>
+                        
+                        <!-- عدد المقالات -->
+                        <div class="user-box">
+                            <input type="number" id="ArticlesCount" class="mt-2" required>
+                            <label for="ArticlesCount">Number of Articles</label>
+                        </div>
+                        
+                        <!-- عدد الاستبيانات -->
+                        <div class="user-box">
+                            <input type="number" id="SurveysCount" class="mt-2" required>
+                            <label for="SurveysCount">Number of Surveys</label>
+                        </div>
+                        
+                        <!-- زر الإضافة -->
+                        <button type="submit" id="add-training-btn" onclick="addTraining()"> 
+                            <i class="fas fa-user-plus"></i> Add
+                        </button>
+                        
+                        <!-- زر التحديث -->
+                        <button type="button" id="updateBtn" style="display: none; background-color: green;">
+                            <i class="fas fa-user-edit"></i> Update
+                        </button>
+                        
+                        <!-- زر الإغلاق -->
+                        <button type="button" id="closeFormBtn" onclick="toggleTrainingForm()">
+                            <i class="fa-regular fa-trash-can"></i> Close
+                        </button>
                     </form>
-                  </div>
-              
                 </div>
-                <div  id="trainingList">
-                  
+                
+                </div>
+                <div id="trainingList">
+                    
   
                 </div>
             <!-- First Training Card -->
@@ -255,8 +288,8 @@
                     <div><i class="fas fa-poll"></i> 5 surveys</div>
                    
                 </div>
-            </div> -->
-            
+            </div> 
+             -->
         </div>
 
         </div>
@@ -279,7 +312,7 @@
 <script src="./js/InstractorDatabase.js"></script>
 <script src="./js/course.js"></script>
 <script src="./js/event.js"></script>
-<script src="./js/lannguage_thems.js"></script>
 <script src="./js/main.js"></script>
+<script src="./js/lannguage_thems.js"></script>
 </body>
 </html>

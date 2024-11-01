@@ -39,37 +39,55 @@ const dbTrainings = new Promise((resolve, reject) => {
 });
 
 function addTraining() {
-    event.preventDefault(); // منع إعادة تحميل الصفحة
+    event.preventDefault(); // منع إعادة تحميل الصفحة عند الضغط على زر الإضافة
 
+    // قراءة القيم من الحقول الجديدة للفورم
     const trainingName = document.getElementById("TrainingName").value;
-    const trainingDay = document.getElementById("Day").value;
-    const trainingTime = document.getElementById("Time").value;
+    const mentorName = document.getElementById("MentorName").value;
+    const mentorImage = document.getElementById("MentorImage").value;
+    const studentsCount = parseInt(document.getElementById("StudentsCount").value);
+    const articlesCount = parseInt(document.getElementById("ArticlesCount").value);
+    const surveysCount = parseInt(document.getElementById("SurveysCount").value);
 
-    if (!trainingName || !trainingDay || !trainingTime) {
+    // التحقق من تعبئة جميع الحقول
+    if (!trainingName || !mentorName || !mentorImage || isNaN(studentsCount) || isNaN(articlesCount) || isNaN(surveysCount)) {
         alert("Please fill out all fields.");
         return;
     }
 
+    // الاتصال بقاعدة البيانات
     dbTrainings.then((dbTraining) => {
         const transaction = dbTraining.transaction("training", "readwrite");
         const trainingsStore = transaction.objectStore("training");
 
+        // إعداد الكائن الذي سيتم إدخاله في قاعدة البيانات
         const newTraining = { 
             name: trainingName, 
-            date: trainingDay, 
-            time: trainingTime 
+            mentor: {
+                name: mentorName,
+                image: mentorImage
+            },
+            studentsCount: studentsCount,
+            articlesCount: articlesCount,
+            surveysCount: surveysCount
         };
 
+        // إضافة التدريب إلى قاعدة البيانات
         const addRequest = trainingsStore.add(newTraining);
 
         addRequest.onsuccess = function () {
             console.log("Training added successfully:", newTraining);
+            // تحديث قائمة التدريبات
             fetchTraining();
         };
 
+        // إفراغ الحقول بعد الإضافة
         document.getElementById("TrainingName").value = "";
-        document.getElementById("Day").value = "";
-        document.getElementById("Time").value = "";
+        document.getElementById("MentorName").value = "";
+        document.getElementById("MentorImage").value = "";
+        document.getElementById("StudentsCount").value = "";
+        document.getElementById("ArticlesCount").value = "";
+        document.getElementById("SurveysCount").value = "";
 
         toggleTrainingForm();
 
@@ -78,6 +96,7 @@ function addTraining() {
         };
     });
 }
+
 
 function toggleTrainingForm() {
     const modal = document.getElementById("TrainingForm");
@@ -95,102 +114,132 @@ function toggleTrainingForm() {
 
 function fetchTraining() {
     dbTrainings.then((dbTraining) => {
-        const transaction = dbTraining.transaction('training', 'readonly');
-        const trainingObjectStore = transaction.objectStore('training');
+        const transaction = dbTraining.transaction("training", "readonly");
+        const trainingsStore = transaction.objectStore("training");
 
-        const trainingRequest = trainingObjectStore.getAll();
+        const getAllRequest = trainingsStore.getAll();
 
-        trainingRequest.onsuccess = function (event) {
-            console.log(event.target.result);
-            let dataTraining = event.target.result;
-            trainingCartona = dataTraining;
-            document.getElementById("TotalTrainings").textContent = dataTraining.length;
-            displayTraining(event.target.result);
+        getAllRequest.onsuccess = function (event) {
+            const trainings = event.target.result;
+            displayTraining(trainings); // عرض التدريبات باستخدام دالة العرض
         };
 
-        trainingRequest.onerror = function (event) {
-            console.error("حدث خطأ في جلب التدريب:", event.target.error);
+        getAllRequest.onerror = function (event) {
+            console.error("Error fetching trainings:", event.target.error);
         };
     }).catch((error) => {
         console.error("خطأ في فتح قاعدة البيانات:", error);
     });
 }
+
 fetchTraining();
 
 function displayTraining(trainings) {
-    const trainingList = document.getElementById("trainingList");
-    trainingList.innerHTML = "";
+    const trainingList = document.getElementById("trainingList"); // تأكد من وجود هذا العنصر في HTML
+    trainingList.innerHTML = ""; // إفراغ القائمة قبل إعادة العرض
 
     trainings.forEach(training => {
+        // إنشاء عناصر البطاقة الرئيسية
         const card = document.createElement("div");
-        card.className = "training-card";
+        card.className = "training-card"; // كلاس البطاقة
 
-        const daySection = document.createElement("div");
-        daySection.className = "day-section";
+        // عنوان التدريب
+        const title = document.createElement("h2");
+        title.className = "training-title";
+        title.textContent = training.trainingName || "Training Name"; // عرض اسم التدريب القادم من الفورم
 
-        const dayName = document.createElement("div");
-        dayName.className = "day-name";
-        dayName.textContent = new Date(training.date).toLocaleString('en-US', { weekday: 'short' });
+        // إنشاء عنصر لمعلومات المدرب
+        const mentorSection = document.createElement("div");
+        mentorSection.className = "mentor-section";
 
-        const dayNumber = document.createElement("div");
-        dayNumber.className = "day-number";
-        dayNumber.textContent = new Date(training.date).getDate();
+        const mentorImage = document.createElement("img");
+        mentorImage.className = "mentor-image";
+        mentorImage.src = training.mentorImage || "./media/2.jpg"; // تأكد من أن الصورة موجودة في البيانات
 
-        daySection.appendChild(dayName);
-        daySection.appendChild(dayNumber);
+        const mentorInfo = document.createElement("div");
+        mentorInfo.className = "mentor-info";
 
-        const contentSection = document.createElement("div");
-        contentSection.className = "content-section";
+        const mentorName = document.createElement("p");
+        mentorName.className = "mentor-name";
+        mentorName.textContent = training.mentorName || "Mentor Name"; // عرض اسم المدرب القادم من الفورم
 
-        const trainingTitle = document.createElement("h3");
-        trainingTitle.className = "training-title";
-        trainingTitle.textContent = training.name;
+        const mentorRole = document.createElement("p");
+        mentorRole.className = "mentor-role";
+        mentorRole.textContent = "Mentor"; // يمكن تخصيصه حسب الحاجة
 
-        const timeInfo = document.createElement("p");
-        timeInfo.className = "training-time";
-        timeInfo.innerHTML = `<i class="fas fa-clock"></i> ${training.time}`;
+        mentorInfo.appendChild(mentorName);
+        mentorInfo.appendChild(mentorRole);
 
-        const meetingIcon = document.createElement("p");
-        meetingIcon.className = "meeting-icon";
-        meetingIcon.innerHTML = `<i class="fas fa-video"></i> Google Meeting`;
+        mentorSection.appendChild(mentorImage);
+        mentorSection.appendChild(mentorInfo);
 
-        contentSection.appendChild(trainingTitle);
-        contentSection.appendChild(timeInfo);
-        contentSection.appendChild(meetingIcon);
+        // إضافة معلومات التدريب الإضافية
+        const statsSection = document.createElement("div");
+        statsSection.className = "stats-section";
 
-        card.appendChild(daySection);
-        card.appendChild(contentSection);
+        const studentsStat = document.createElement("p");
+        studentsStat.innerHTML = `<i class="fas fa-users"></i> ${training.studentsCount || 0} students`;
 
+        const articlesStat = document.createElement("p");
+        articlesStat.innerHTML = `<i class="fas fa-file-alt"></i> ${training.articlesCount || 0} articles`;
+
+        const surveysStat = document.createElement("p");
+        surveysStat.innerHTML = `<i class="fas fa-poll"></i> ${training.surveysCount || 0} surveys`;
+
+        statsSection.appendChild(studentsStat);
+        statsSection.appendChild(articlesStat);
+        statsSection.appendChild(surveysStat);
+
+        // تجميع العناصر
+        card.appendChild(title);
+        card.appendChild(mentorSection);
+        card.appendChild(statsSection);
+
+        // إضافة السهم للانتقال
+        const arrowIcon = document.createElement("span");
+        arrowIcon.className = "arrow-icon";
+        arrowIcon.innerHTML = `<i class="fas fa-chevron-right"></i>`;
+        card.appendChild(arrowIcon);
+
+        // إضافة البطاقة إلى القائمة الرئيسية
         trainingList.appendChild(card);
     });
 }
 
-function filterTrainingsByDate() {
-    const selectedDate = document.getElementById("filterDate").value;
+// search about traning name about search input 
+    document.getElementById("searchInput").addEventListener("keyup", function() {
+        const searchValue = this.value.toLowerCase();
+        const trainingCards = document.querySelectorAll(".training-card");
 
-    fetchAllTrainings().then((trainings) => {
-        const filteredTrainings = trainings.filter((training) => training.date === selectedDate);
-        displayTraining(filteredTrainings);
-    }).catch((error) => {
-        console.error("Error in filtering trainings:", error);
-    });
-}
+        trainingCards.forEach(card => {
+            const trainingName = card.querySelector(".training-title").textContent.toLowerCase();
 
-function fetchAllTrainings() {
-    return dbTrainings.then((dbTraining) => {
-        const transaction = dbTraining.transaction("training", "readonly");
-        const trainingsStore = transaction.objectStore("training");
-
-        return new Promise((resolve, reject) => {
-            const request = trainingsStore.getAll();
-
-            request.onsuccess = function (event) {
-                resolve(event.target.result);
-            };
-
-            request.onerror = function (event) {
-                reject(event.target.error);
-            };
+            if (trainingName.includes(searchValue)) {
+                card.style.display = "block";
+            } else {
+                card.style.display = "none";
+            }
         });
     });
+
+
+
+// تحديث الإحصائيات
+function updateStatistics() {
+    // فتح معاملة للقراءة من جدول "training"
+    const trainingTransaction = dbEvent.transaction(["training"], "readonly");
+    const trainingStore = trainingTransaction.objectStore("training");
+
+    // عدّ عدد السجلات في جدول "training"
+    const trainingRequest = trainingStore.count();
+
+    // تحديث عرض عدد الطلاب عند نجاح الطلب
+    trainingRequest.onsuccess = function(event) {
+        document.getElementById("TotalTrainings").textContent = event.target.result;
+    };
+
+    // التعامل مع الأخطاء إذا حدثت
+    trainingRequest.onerror = function() {
+        console.error("Failed to count trainings.");
+    };
 }

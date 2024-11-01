@@ -4,6 +4,8 @@
   box-sizing: border-box;
 }
 
+
+
 .buttons-container img{
     width: 50px;
     height: 50px;
@@ -594,7 +596,80 @@ overflow: hidden;
 }
 
 
+/* traning  */
+.training-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  align-items: flex-start;
+  position: relative;
+}
 
+.training-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.mentor-section {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.mentor-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.mentor-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.mentor-name {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+}
+
+.mentor-role {
+  font-size: 14px;
+  color: #666;
+}
+
+.stats-section {
+  display: flex;
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.stats-section p {
+  font-size: 14px;
+  color: #666;
+  display: flex;
+  align-items: center;
+}
+
+.stats-section i {
+  margin-right: 5px;
+}
+
+.arrow-icon {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #333;
+}
 
 
 
