@@ -144,11 +144,11 @@
               <!-- form for add event  -->
               
               <div id="EventForm" class="login-box" style="z-index: 999;">
-                <h2 data-translate="OverviewAddedEvent">Add Event</h2>
+                <h2 data-translate="AddEvent">Add Event</h2>
                 <form class="teacherForm">
                   <div class="user-box">
                     <input type="text" id="MeetingName" class="mt-2" required>
-                    <label for="MeetingName">Name Of Meeting</label>
+                    <label for="MeetingName" data-translate="NameOfMeeting">Name Of Meeting</label>
                   </div>
                   <div class="user-box">
                     <input type="date" id="Day" class="mt-2" required>
@@ -159,9 +159,9 @@
                   </div>
                   
                   
-                  <button type="submit" id="add-student-btn" onclick="addEvent() "> <i class="fas fa-user-plus"></i>Add</button>
-                  <button type="button" id="updateBtn" style="display: none; background-color: green;"><i class="fas fa-user-edit"></i> Update</button>
-                  <button type="button" id="closeFormBtn" onclick="toggleEventForm()"><i class="fa-regular fa-trash-can"></i> Close</button>
+                  <button type="submit" id="add-student-btn" onclick="addEvent() " data-translate="AddUser" > <i class="fas fa-user-plus"></i>Add</button>
+                  <button type="button" id="updateBtn" style="display: none; background-color: green;" data-translate="UpdateUser"><i class="fas fa-user-edit"></i> Update</button>
+                  <button type="button" id="closeFormBtn" onclick="toggleEventForm()" data-translate="Close"><i class="fa-regular fa-trash-can"></i> Close</button>
                      
                 </form>
               </div>

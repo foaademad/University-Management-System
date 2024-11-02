@@ -44,13 +44,12 @@ function addTraining() {
     // قراءة القيم من الحقول الجديدة للفورم
     const trainingName = document.getElementById("TrainingName").value;
     const mentorName = document.getElementById("MentorName").value;
-    const mentorImage = document.getElementById("MentorImage").value;
     const studentsCount = parseInt(document.getElementById("StudentsCount").value);
     const articlesCount = parseInt(document.getElementById("ArticlesCount").value);
     const surveysCount = parseInt(document.getElementById("SurveysCount").value);
 
     // التحقق من تعبئة جميع الحقول
-    if (!trainingName || !mentorName || !mentorImage || isNaN(studentsCount) || isNaN(articlesCount) || isNaN(surveysCount)) {
+    if (!trainingName || !mentorName || isNaN(studentsCount) || isNaN(articlesCount) || isNaN(surveysCount)) {
         alert("Please fill out all fields.");
         return;
     }
@@ -65,7 +64,7 @@ function addTraining() {
             name: trainingName, 
             mentor: {
                 name: mentorName,
-                image: mentorImage
+                // image: mentorImage
             },
             studentsCount: studentsCount,
             articlesCount: articlesCount,
@@ -79,12 +78,12 @@ function addTraining() {
             console.log("Training added successfully:", newTraining);
             // تحديث قائمة التدريبات
             fetchTraining();
+            updateStatistics(); // استدعاء تحديث الإحصائيات هنا
         };
 
         // إفراغ الحقول بعد الإضافة
         document.getElementById("TrainingName").value = "";
         document.getElementById("MentorName").value = "";
-        document.getElementById("MentorImage").value = "";
         document.getElementById("StudentsCount").value = "";
         document.getElementById("ArticlesCount").value = "";
         document.getElementById("SurveysCount").value = "";
@@ -135,18 +134,18 @@ function fetchTraining() {
 fetchTraining();
 
 function displayTraining(trainings) {
-    const trainingList = document.getElementById("trainingList"); // تأكد من وجود هذا العنصر في HTML
+    const trainingList = document.getElementById("trainingList");
     trainingList.innerHTML = ""; // إفراغ القائمة قبل إعادة العرض
 
     trainings.forEach(training => {
         // إنشاء عناصر البطاقة الرئيسية
         const card = document.createElement("div");
-        card.className = "training-card"; // كلاس البطاقة
+        card.className = "training-card";
 
         // عنوان التدريب
         const title = document.createElement("h2");
         title.className = "training-title";
-        title.textContent = training.trainingName || "Training Name"; // عرض اسم التدريب القادم من الفورم
+        title.textContent = training.name || "Training Name"; // عرض اسم التدريب من البيانات
 
         // إنشاء عنصر لمعلومات المدرب
         const mentorSection = document.createElement("div");
@@ -154,18 +153,18 @@ function displayTraining(trainings) {
 
         const mentorImage = document.createElement("img");
         mentorImage.className = "mentor-image";
-        mentorImage.src = training.mentorImage || "./media/2.jpg"; // تأكد من أن الصورة موجودة في البيانات
+        mentorImage.src = training.image || "./media/2.jpg"; // عرض صورة المدرب من البيانات
 
         const mentorInfo = document.createElement("div");
         mentorInfo.className = "mentor-info";
 
         const mentorName = document.createElement("p");
         mentorName.className = "mentor-name";
-        mentorName.textContent = training.mentorName || "Mentor Name"; // عرض اسم المدرب القادم من الفورم
+        mentorName.textContent = training.mentor.name || "Mentor Name"; // عرض اسم المدرب من البيانات
 
         const mentorRole = document.createElement("p");
         mentorRole.className = "mentor-role";
-        mentorRole.textContent = "Mentor"; // يمكن تخصيصه حسب الحاجة
+        mentorRole.textContent = "Mentor";
 
         mentorInfo.appendChild(mentorName);
         mentorInfo.appendChild(mentorRole);
@@ -206,6 +205,7 @@ function displayTraining(trainings) {
     });
 }
 
+
 // search about traning name about search input 
     document.getElementById("searchInput").addEventListener("keyup", function() {
         const searchValue = this.value.toLowerCase();
@@ -227,13 +227,13 @@ function displayTraining(trainings) {
 // تحديث الإحصائيات
 function updateStatistics() {
     // فتح معاملة للقراءة من جدول "training"
-    const trainingTransaction = dbEvent.transaction(["training"], "readonly");
+    const trainingTransaction = dbTraining.transaction(["training"], "readonly");
     const trainingStore = trainingTransaction.objectStore("training");
 
     // عدّ عدد السجلات في جدول "training"
     const trainingRequest = trainingStore.count();
 
-    // تحديث عرض عدد الطلاب عند نجاح الطلب
+    // تحديث عرض عدد التدريبات عند نجاح الطلب
     trainingRequest.onsuccess = function(event) {
         document.getElementById("TotalTrainings").textContent = event.target.result;
     };

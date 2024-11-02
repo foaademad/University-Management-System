@@ -142,7 +142,7 @@
               </div>
               <!-- form for add student  -->
               <div id="courseForm" class="login-box" style="z-index: 999;">
-                <h2 data-translate="OverviewAddedCourse">Add Course</h2>
+                <h2 data-translate="AddCourse">Add Course</h2>
                 <form>
                   <div class="user-box">
                     <input type="text" id="courseName" name="courseName" required><br>
@@ -154,19 +154,19 @@
                   </div>
                   <div class="user-box">
                     <select id="courseLevel" name="courseLevel" required>
-                      <option value="Beginner">Beginner</option>
-                      <option value="Intermediate">Intermediate</option>
-                      <option value="Advanced">Advanced</option>
+                      <option value="Beginner" data-translate="Beginner">Beginner</option>
+                      <option value="Intermediate" data-translate="Intermediate">Intermediate</option>
+                      <option value="Advanced" data-translate="Advanced">Advanced</option>                      
                   </select><br>
                   </div>
                  
 
 
-                  <button type="submit" id="add-course-btn" onclick="addCourse()"> <i
+                  <button type="submit" id="add-course-btn" onclick="addCourse()" data-translate="AddUser"> <i
                       class="fas fa-user-plus"></i>Add</button>
-                  <button type="button" id="updateBtn" style="display: none; background-color: green;"><i
+                  <button type="button" id="updateBtn" style="display: none; background-color: green;" data-translate="UpdateUser"><i
                       class="fas fa-user-edit"></i> Update</button>
-                  <button type="button" onclick="toggleEventForm()"><i class="fa-regular fa-trash-can"></i> Close</button>
+                  <button type="button" onclick="toggleEventForm()" data-translate="Close"><i class="fa-regular fa-trash-can" ></i> Close</button>
                   <!-- button update  -->
                 </form>
               </div>

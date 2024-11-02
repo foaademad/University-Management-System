@@ -151,7 +151,8 @@
                   <i class="fa-solid fa-plus"></i>
                 </div>
                 <div class="overview_card_content">
-                  <p data-translate="OverviewAddStudent">Add Student</p>
+                  <p data-translate="AddStudent">Add Student</p>
+
                 </div>
                 <!-- form for add student  -->
                 <div id="studentForm" class="login-box" style="z-index: 999;">
@@ -169,11 +170,16 @@
                       <input type="text" name="" id="StudentPerformance" required>
                       <label data-translate="ResultPerformance">Performance</label>
                     </div>
-                    <button type="submit" id="add-student-btn" onclick="addClient()"> <i
-                        class="fas fa-user-plus"></i>Add</button>
-                    <button type="button" id="updateBtn" style="display: none; background-color: green;"><i
-                        class="fas fa-user-edit"></i> Update</button>
-                    <button type="button" onclick="toggleEventForm()"><i class="fa-regular fa-trash-can"></i> Close</button>
+                    <button type="submit" id="add-student-btn" onclick="addClient()" data-translate="AddUser"> <i
+                        class="fas fa-user-plus"></i>Add
+                    </button>
+                    <button type="button" id="updateBtn" style="display: none; background-color: green;" data-translate="UpdateUser">
+                      <i
+                        class="fas fa-user-edit"></i> Update
+                    </button>
+                    <button type="button" onclick="toggleEventForm()"  data-translate="Close">
+                      <i class="fa-regular fa-trash-can"></i> Close
+                    </button>
                     <!-- button update  -->
                   </form>
                 </div>

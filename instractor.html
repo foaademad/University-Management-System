@@ -144,36 +144,38 @@
               </div>
               <!-- form for add instractor  -->
               <div id="InstructorForm" class="login-box" style="z-index: 999;">
-                <h2 data-translate="OverviewAddedInstructor">Add Instructor</h2>
+                <h2 data-translate="AddInstructors" >Add Instructor</h2>
                 <form class="teacherForm">
                   <div class="user-box">
                     <input type="text" id="fullName" class="mt-2" required>
-                    <label for="fullName">Full Name </label>
+                    <label for="fullName" data-translate="FullName">Full Name</label>
                   </div>
                   <div class="user-box">
                     <input type="email" id="email" class="mt-2" required>
-                    <label for="email">Email</label>
+                    <label for="email" data-translate="Email">Email</label>
                   </div>
                   <div class="user-box">
                     <input type="number" id="phone" class="mt-2" required>
-                    <label for="phone">Phone Number</label>
+                    <label for="phone" data-translate="PhoneNumber">Phone Number</label>
                   </div>
                   <div class="user-box">
                     <select id="specialization" required>
-                      <option value="programming">programming</option>
-                        <option value="accounting">accounting</option>
-                        <option value="flutter">flutter</option>
-                        <option value="static">static </option>
+                      <option value="programming" data-translate="Programming">programming(Web)</option>
+                      <option value="accounting" data-translate="Accounting">accounting</option>
+                        <option value="flutter" data-translate="Flutter">programming(flutter)</option>
+                        <option value="static" data-translate="Static">static</option>
+
                     </select>
                    
                   </div>
                   <div class="user-box">
                     <input type="number" id="experience"class="mt-2" min="0" required>
-                    <label for="experience">Experience Years</label>
+                    <label for="experience" data-translate="ExperienceYears">Experience Years</label>
                   </div>
-                  <button type="submit" id="add-student-btn" onclick="addinstractor() "> <i class="fas fa-user-plus"></i>Add</button>
-                  <button type="button" id="updateBtn" style="display: none; background-color: green;"><i class="fas fa-user-edit"></i> Update</button>
-                  <button type="button" id="closeFormBtn" onclick="toggleEventForm()"><i class="fa-regular fa-trash-can"></i> Close</button>
+                  <button type="submit" id="add-student-btn" onclick="addinstractor() " data-translate="AddUser"> 
+                    <i class="fas fa-user-plus"></i>Add</button>
+                  <button type="button" id="updateBtn" style="display: none; background-color: green;" data-translate="UpdateUser" ><i class="fas fa-user-edit"></i> Update</button>
+                  <button type="button" id="closeFormBtn" onclick="toggleEventForm()"  data-translate="Close"><i class="fa-regular fa-trash-can"></i> Close</button>
                      
                 </form>
               </div>
