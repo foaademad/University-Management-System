@@ -1,13 +1,13 @@
 
- //* give event margin left if dir arabic * */
- let days = document.getElementsByClassName('day');
+//* give event margin left if dir arabic * */
+let days = document.getElementsByClassName('day');
 
- // تحقق مما إذا كانت القيمة 'rtl'
- if ( localStorage.getItem("language") || "en" === 'rtl') {
-     for (let i = 0; i < days.length; i++) {
-         days[i].style.marginLeft="20px"; // تطبيق الـ margin left إذا كانت الاتجاه 'rtl'
-     }
- }
+// تحقق مما إذا كانت القيمة 'rtl'
+if (localStorage.getItem("language") || "en" === 'rtl') {
+    for (let i = 0; i < days.length; i++) {
+        days[i].style.marginLeft = "20px"; // تطبيق الـ margin left إذا كانت الاتجاه 'rtl'
+    }
+}
 
 // ==============================================================================================================
 //  database for tranning 
@@ -60,8 +60,8 @@ function addTraining() {
         const trainingsStore = transaction.objectStore("training");
 
         // إعداد الكائن الذي سيتم إدخاله في قاعدة البيانات
-        const newTraining = { 
-            name: trainingName, 
+        const newTraining = {
+            name: trainingName,
             mentor: {
                 name: mentorName,
                 // image: mentorImage
@@ -105,8 +105,8 @@ function toggleTrainingForm() {
         return;
     }
 
-    modal.style.display = (modal.style.display === "none" || modal.style.display === "") 
-        ? "block" 
+    modal.style.display = (modal.style.display === "none" || modal.style.display === "")
+        ? "block"
         : "none";
 }
 
@@ -207,20 +207,20 @@ function displayTraining(trainings) {
 
 
 // search about traning name about search input 
-    document.getElementById("searchInput").addEventListener("keyup", function() {
-        const searchValue = this.value.toLowerCase();
-        const trainingCards = document.querySelectorAll(".training-card");
+document.getElementById("searchInput").addEventListener("keyup", function () {
+    const searchValue = this.value.toLowerCase();
+    const trainingCards = document.querySelectorAll(".training-card");
 
-        trainingCards.forEach(card => {
-            const trainingName = card.querySelector(".training-title").textContent.toLowerCase();
+    trainingCards.forEach(card => {
+        const trainingName = card.querySelector(".training-title").textContent.toLowerCase();
 
-            if (trainingName.includes(searchValue)) {
-                card.style.display = "block";
-            } else {
-                card.style.display = "none";
-            }
-        });
+        if (trainingName.includes(searchValue)) {
+            card.style.display = "block";
+        } else {
+            card.style.display = "none";
+        }
     });
+});
 
 
 
@@ -234,12 +234,12 @@ function updateStatistics() {
     const trainingRequest = trainingStore.count();
 
     // تحديث عرض عدد التدريبات عند نجاح الطلب
-    trainingRequest.onsuccess = function(event) {
+    trainingRequest.onsuccess = function (event) {
         document.getElementById("TotalTrainings").textContent = event.target.result;
     };
 
     // التعامل مع الأخطاء إذا حدثت
-    trainingRequest.onerror = function() {
+    trainingRequest.onerror = function () {
         console.error("Failed to count trainings.");
     };
 }

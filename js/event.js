@@ -66,8 +66,8 @@ function addEvent() {
 // فتح وإغلاق النموذج
 function toggleEventForm() {
     const modal = document.getElementById("EventForm");
-    modal.style.display = (modal.style.display === "none" || modal.style.display === "") 
-        ? "block" 
+    modal.style.display = (modal.style.display === "none" || modal.style.display === "")
+        ? "block"
         : "none";
 }
 
@@ -167,7 +167,7 @@ function fetchAllEvents() {
 
         return new Promise((resolve, reject) => {
             const request = eventsStore.getAll();
-            
+
             request.onsuccess = function (event) {
                 console.log("Fetched events:", event.target.result); // تصحيح: عرض البيانات في الـ console
                 resolve(event.target.result); // إرجاع مصفوفة الأحداث

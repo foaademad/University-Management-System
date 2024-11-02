@@ -1,35 +1,35 @@
 
 let dbcourse;
-let courseCartona = [] 
+let courseCartona = []
 
 
 
 const cousePromise = new Promise((resolve, reject) => {
-const request = indexedDB.open("courseDatabase", 1);
+    const request = indexedDB.open("courseDatabase", 1);
 
-request.onerror = function (event) {
-    console.error("خطأ في فتح قاعدة البيانات:", event);
-    reject(event.target.error);
-};
+    request.onerror = function (event) {
+        console.error("خطأ في فتح قاعدة البيانات:", event);
+        reject(event.target.error);
+    };
 
-request.onsuccess = function (event) {
-    dbcourse = event.target.result;
-    console.log("تم فتح قاعدة البيانات بنجاح");
-    resolve(dbcourse);
-};
+    request.onsuccess = function (event) {
+        dbcourse = event.target.result;
+        console.log("تم فتح قاعدة البيانات بنجاح");
+        resolve(dbcourse);
+    };
 
-request.onupgradeneeded = function (event) {
-    dbcourse = event.target.result;
-    const coursesStore = dbcourse.createObjectStore("course", {
-    keyPath: "id",
-    autoIncrement: true,
-    });
-    // doctorStore.createIndex("email", "email", {
-    // unique: false,
-    // });
+    request.onupgradeneeded = function (event) {
+        dbcourse = event.target.result;
+        const coursesStore = dbcourse.createObjectStore("course", {
+            keyPath: "id",
+            autoIncrement: true,
+        });
+        // doctorStore.createIndex("email", "email", {
+        // unique: false,
+        // });
 
 
-}
+    }
 
 })
 
@@ -42,7 +42,7 @@ function addCourse() {
     const courseHours = document.getElementById("courseHours").value;
     const courseLevel = document.getElementById("courseLevel").value;
 
-    if (!courseName  || !courseHours || !courseLevel ) {
+    if (!courseName || !courseHours || !courseLevel) {
         alert("Please fill out all fields.");
         return;
     }
@@ -51,8 +51,8 @@ function addCourse() {
         const transaction = dbcourse.transaction("course", "readwrite");
         const courseStore = transaction.objectStore("course");
 
-        const newCourse = { 
-            name: courseName, 
+        const newCourse = {
+            name: courseName,
             hours: courseHours,
             level: courseLevel,
         };
@@ -74,13 +74,13 @@ function addCourse() {
 
     document.getElementById("courseHours").value = "";
     document.getElementById("courseLevel").value = "";
-    toggleEventForm() 
+    toggleEventForm()
 }
 // دالة لفتح وإغلاق الفورم (Toggle)
 function toggleEventForm() {
     const modal = document.getElementById("courseForm");
-    modal.style.display = (modal.style.display === "none" || modal.style.display === "") 
-        ? "block" 
+    modal.style.display = (modal.style.display === "none" || modal.style.display === "")
+        ? "block"
         : "none";
 }
 
@@ -94,10 +94,10 @@ function fetchCourses() {
         getAllCourses.onsuccess = function (event) {
             console.log(event.target.result)
 
-    let dataClient = event.target.result
+            let dataClient = event.target.result
 
-    courseCartona = dataClient
-        document.getElementById("TotalCourses").textContent = dataClient.length
+            courseCartona = dataClient
+            document.getElementById("TotalCourses").textContent = dataClient.length
 
             displayCourses(event.target.result);  // عرض الدورات
         };
@@ -139,7 +139,7 @@ function displayCourses(courses) {
         const editBtn = document.createElement("button");
         editBtn.className = "refresh-btn";
         editBtn.innerHTML = '<i class="fas fa-sync-alt"></i>';
-        
+
         // تعديل معلومات الدورة
         editBtn.addEventListener("click", () => {
             // فتح النموذج الذي سيتم تعديل المعلومات فيه
@@ -249,7 +249,7 @@ function updateStatistics() {
     const clientStore = clientTransaction.objectStore("course");
     const clientRequest = clientStore.count();
 
-    clientRequest.onsuccess = function(event) {
+    clientRequest.onsuccess = function (event) {
         document.getElementById("totalStudents").textContent = event.target.result; // Update total courses count
     };
 }
@@ -260,9 +260,9 @@ function updateStatistics() {
 
 
 document.getElementById("search").addEventListener("input", filterStudents);
-    function filterStudents() {
-        const searchTerm = document.getElementById("search").value.toLowerCase();
-        const filteredStudents = courseCartona.filter(student => student.name.toLowerCase().includes(searchTerm));
-        displayCourses(filteredStudents);
-    }
-    
+function filterStudents() {
+    const searchTerm = document.getElementById("search").value.toLowerCase();
+    const filteredStudents = courseCartona.filter(student => student.name.toLowerCase().includes(searchTerm));
+    displayCourses(filteredStudents);
+}
+
